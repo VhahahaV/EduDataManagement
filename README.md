@@ -1,70 +1,48 @@
-# Getting Started with Create React App
+# 基于低代码平台的信息服务应用开发
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 目的
 
-## Available Scripts
+通过信息服务平台开发，掌握通过模型驱动服务配置及前端开发的方法。
 
-In the project directory, you can run:
+## 平台
 
-### `npm start`
+IST 实验室 RMP 低代码平台（应用程度不限，可以选择为建模、数据后台、后台支撑平台任何形式之一）
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 描述
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+小组作业，3-4 人一组，以某一参考业务为例（业务仅供参考，可自行裁剪或者增加），基于低代码平台实现系统的界面原型。
 
-### `npm test`
+### 服务平台重点体现出三个方面：
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **业务**：是通过平台实现服务使用者和服务提供者的撮合过程，体现出平台用户、服务提供者、平台管理者等三类用户的交互过程；
+- **架构**：重点关注多个用户的服务集成和交互，例如手机端、网页端、以及后台的信息交互过程，并根据业务情况，分别考虑数据、状态、消息事件三类数据的传递和交互方式；
+- **算法**：构造智能算法，体现平台从事先、事中、事后等业务流程中的某个环节的优化实现。
 
-### `npm run build`
+## 具体要求
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### （1）需求分析阶段：
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- 提交一个需求描述文档（第 12 周周日 5 月 12 日晚）(组长邮件发到 [han_yu@sjtu.edu.cn](mailto:han_yu@sjtu.edu.cn))。给出一个服务平台的跨泳道流程图，简要描述涉及到的角色（三个以上）和主要用例，以及体现处理智能化或者优化的核心算法简要描述（篇幅不超过 2 页）。
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### （2）软件设计阶段：
 
-### `npm run eject`
+- 提交一个软件的设计架构文档（第 13 周周日 5 月 19 日晚）(组长邮件发到 [han_yu@sjtu.edu.cn](mailto:han_yu@sjtu.edu.cn))。给出核心算法的描述，以及技术架构图（篇幅不超过 2 页）。
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### （3）演示视频提交
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- 第 14 周周日晚（2023 年 5 月 26 号晚 12 点，小组组长邮件发到 [han_yu@sjtu.edu.cn](mailto:han_yu@sjtu.edu.cn)）：
+- 对设计方案进行迭代，开发原型系统，提供视频 DEMO 以展示系统。
+- 答辩视频 DEMO 录制要点，将 PPT 和视频一起录制，结合流程的各个场景，最长不超过 5 分钟。PPT 页码如下：
+  - Page1：题目
+  - Page2：概述（业务需求及问题）
+  - Page4：流程及主要场景（涉及到多个角色交互的服务平台场景）
+  - Page5：实现技术架构
+  - Page6：数据模型（和 RMP 平台的模型对应）
+  - Page7：算法逻辑（体现业务复杂性的算法或者控制逻辑）
+  - Page8：主要创新之处
+  - Page9：组员分工
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### （4）作业最终提交：
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- 第 14 周周日晚（2024 年 5 月 26 号晚 12 点，邮件发到助教邮箱 [samwang_1024@sjtu.edu.cn](mailto:samwang_1024@sjtu.edu.cn)），答辩预计安排在第 15 周周六进行。
+- 完成完整文档提交，一个包含所有需求、设计及实现内容的 doc（包含组员分工的百
