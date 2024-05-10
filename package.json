@@ -1,20 +1,29 @@
 {
-  "name": "edu_data_management",
+  "name": "code_arena",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
+    "@ant-design/icons": "^5.1.4",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "ace-builds": "^1.23.3",
+    "antd": "^5.6.2",
+    "echarts": "^5.4.2",
+    "react": "^18.2.0",
+    "react-ace": "^10.1.0",
+    "react-dom": "^18.2.0",
+    "react-markdown": "^8.0.7",
+    "react-monaco-editor": "^0.52.0",
+    "react-router-dom": "^6.13.0",
     "react-scripts": "5.0.1",
+    "route": "^0.2.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -34,5 +43,20 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.22.6",
+    "@babel/preset-env": "^7.22.6",
+    "@babel/preset-react": "^7.22.5",
+    "@testing-library/jest-dom": "^5.16.5",
+    "babel-jest": "^29.6.0",
+    "jest": "^27.5.1"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "transform": {
+      "^.+\\.js$": "babel-jest",
+      "^.+\\.jsx?$": "babel-jest"
+    }
   }
 }
