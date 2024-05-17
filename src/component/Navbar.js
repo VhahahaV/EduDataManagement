@@ -21,29 +21,57 @@ const Navbar = (props) => {
     <PageMenu />
     {
       (username === "") ?
-        <Button
-          style={{ margin: "auto 32px auto auto", color: "#000", border: "1px solid #000" }}
-          onClick={() => {
-            window.location.href = "/login"
-          }}
-          type="primary"
-          ghost
-        >
-          登录
-        </Button> :
-        <Button
-          style={{ margin: "auto 32px auto auto", color: "#000", border: "1px solid #000" }}
-          onClick={() => {
-            logout()
-            setTimeout(() => {
-              window.location.reload()
-            }, 1000)
-          }}
-          type="primary"
-          ghost
-        >
-          登出
-        </Button >
+        <div style={{ margin: "auto 32px auto auto" }}>
+          <Button
+            style={{ margin: "auto 32px auto auto", color: "#000", border: "1px solid #000" }}
+            onClick={() => {
+              window.location.href = "/login"
+            }}
+            type="primary"
+            ghost
+          >
+            登录
+          </Button>
+        </div>
+        :
+
+        <div style={{ margin: "auto 32px auto auto" }}>
+          <Button
+            style={{ margin: "auto 32px auto auto", color: "#000", border: "1px solid #000" }}
+            onClick={() => {
+              window.location.href = "/test"
+            }}
+            type="primary"
+            ghost
+          >
+            学生登录
+          </Button>
+
+          <Button
+            style={{ margin: "auto 32px auto auto", color: "#000", border: "1px solid #000" }}
+            onClick={() => {
+              window.location.href = "/"
+            }}
+            type="primary"
+            ghost
+          >
+            教师登录
+          </Button>
+
+          <Button
+            style={{ margin: "auto 32px auto auto", color: "#000", border: "1px solid #000" }}
+            onClick={() => {
+              logout()
+              setTimeout(() => {
+                window.location.reload()
+              }, 1000)
+            }}
+            type="primary"
+            ghost
+          >
+            登出
+          </Button >
+        </div>
 
     }
   </>
@@ -67,7 +95,7 @@ const PageMenu = (props) => {
         <span style={{ margin: "auto 8px auto auto", }}>
           <DatabaseOutlined />
         </span>
-        题库
+        课程
       </div>
       ),
     },
@@ -77,7 +105,7 @@ const PageMenu = (props) => {
         <span style={{ margin: "auto 8px auto auto" }}>
           <DashboardOutlined />
         </span>
-        评测
+        学生
       </div>)
     },
     {
@@ -85,24 +113,6 @@ const PageMenu = (props) => {
       label: (<div className="menu-item" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>
         <span style={{ margin: "auto 8px auto auto" }}>
           <DashboardOutlined />
-        </span>
-        战果
-      </div>)
-    },
-    {
-      key: 4,
-      label: (<div className="menu-item" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>
-        <span style={{ margin: "auto 8px auto auto" }}>
-          <LineChartOutlined />
-        </span>
-        排名
-      </div>)
-    },
-    {
-      key: 5,
-      label: (<div className="menu-item" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>
-        <span style={{ margin: "auto 8px auto auto" }}>
-          <AppstoreAddOutlined />
         </span>
         管理
       </div>)
@@ -113,8 +123,6 @@ const PageMenu = (props) => {
     "/",
     "/problems",
     "/judgeStatus",
-    "/judgeResultStatistic",
-    "/rank",
     "/admin"
   ]
 

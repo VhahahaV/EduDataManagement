@@ -1,43 +1,34 @@
 import { Table, Button, Layout, Tag } from "antd"
 import React, { useEffect, useState } from "react"
 import Navbar from "../component/Navbar"
-import { getProblems } from "../service/problem"
 import { Link } from "react-router-dom"
 import img from "../assets/logo.gif"
 
 const { Header, Content, Footer } = Layout
-
-const renderDifficulty = (value) => {
-  let color = ''
-  if (value === '简单') {
-    color = 'green'
-  }
-  else if (value === '中等') {
-    color = 'orange'
-  } else if (value === '困难') {
-    color = 'red'
-  }
-  return <Tag color={color}>{value}</Tag>
-}
 const ProblemsPage = (props) => {
   const columns = [
     {
-      title: <p style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>题号</p>,
+      title: <p style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>课程编号</p>,
       dataIndex: "id",
       key: "id",
       render: (text) => <span style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{text}</span>
     },
     {
-      title: <p style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>标题</p>,
-      dataIndex: "name",
-      key: "title",
+      title: <p style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>课程名称</p>,
+      dataIndex: "className",
+      key: "className",
       render: (text) => <span style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{text}</span>
     },
     {
-      title: <p style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>难度</p>,
-      dataIndex: "difficulty",
-      key: "difficulty",
-      render: renderDifficulty
+      title: <p style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>课程教师</p>,
+      dataIndex: "classTeacher",
+      key: "classTeacher",
+      render: (teachers) => {
+        const teacherNames = teachers.map(teacher => teacher.name)
+        return <span style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>
+          {teacherNames.join(",")}
+        </span>
+      }
     },
     {
       title: <p style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>操作</p>,
@@ -51,19 +42,60 @@ const ProblemsPage = (props) => {
     }
   ]
 
-  const [problems, setProblems] = useState([])
-
-  useEffect(() => {
-    getProblems((result) => {
-      console.log(result)
-      if (result.code === 1) {
-        setProblems(result.data)
-      } else {
-        console.log(result.msg)
-      }
-    })
-  }, [])
-
+  const data = [
+    {
+      id: 1,
+      className: "高等数学",
+      classTeacher: [
+        {
+          id: 1,
+          name: "武忠祥"
+        },
+        {
+          id: 2,
+          name: "张宇"
+        }
+      ],
+    },
+    {
+      id: 2,
+      className: "概率论与数理统计",
+      classTeacher: [
+        {
+          id: 1,
+          name: "武忠祥"
+        },
+        {
+          id: 2,
+          name: "张宇"
+        }
+      ],
+    },
+    {
+      id: 3,
+      className: "线性代数",
+      classTeacher: [
+        {
+          id: 1,
+          name: "武忠祥"
+        },
+        {
+          id: 2,
+          name: "张宇"
+        }
+      ],
+    },
+    {
+      id: 4,
+      className: "软件工程原理与实践",
+      classTeacher: [
+        {
+          id: 3,
+          name: "沈备军"
+        }
+      ],
+    },
+  ]
 
   return (<Layout style={{ minHeight: "100vh" }}>
     <Header className="header">
@@ -77,7 +109,7 @@ const ProblemsPage = (props) => {
           padding: '24px 96px',
         }}
       >
-        <Table columns={columns} dataSource={problems} />
+        <Table columns={columns} dataSource={data} />
       </Layout>
     </Content>
     <Footer>
