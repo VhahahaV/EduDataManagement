@@ -20,15 +20,15 @@ const MainRouter = (props) => {
     <Route path="/" element={<HomePage />} />
     <Route path="/login" element={<LoginPage />} />
 
-    <Route path="/rank" element={<PrivateRoute component={<RankPage />} />} />
-    <Route path="/problems" element={<PrivateRoute component={<ProblemsPage />} />} />
-    <Route path="/problem" element={<PrivateRoute component={<ProblemPage />} />} />
-    <Route path="/announcement" element={<PrivateRoute component={<AnnouncementPage />} />} />
-    <Route path="/judgeStatus" element={<PrivateRoute component={<JudgeStatusPage />} />} />
-    <Route path="/judgeDetail" element={<PrivateRoute component={<JudgeDetailPage />} />} />
-    <Route path="/judgeResultStatistic" element={<PrivateRoute component={<JudgeResultStatisticPage />} />} />
-    <Route path="/admin" element={<PrivateRoute component={<AdminPage />} />} />
-    <Route path="/test" element={<PrivateRoute component={<TestPage />} />} />
+    <Route path="/rank" element={<RankPage />} />
+    <Route path="/problems" element={<ProblemsPage />} />
+    <Route path="/problem" element={<ProblemPage />} />
+    <Route path="/announcement" element={<AnnouncementPage />} />
+    <Route path="/judgeStatus" element={<JudgeStatusPage />} />
+    <Route path="/judgeDetail" element={<JudgeDetailPage />} />
+    <Route path="/judgeResultStatistic" element={<JudgeResultStatisticPage />} />
+    <Route path="/admin" element={<AdminPage />} />
+    <Route path="/test" element={<TestPage />} />
 
   </Routes>
 }
