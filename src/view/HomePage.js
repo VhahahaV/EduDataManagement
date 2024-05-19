@@ -69,7 +69,7 @@ const HomePage = () => {
       dataIndex: 'Name',
       key: 'Name',
       render: (text, record) => <Link to={{
-        pathname: "/judgeResultStatistic",
+        pathname: "/study",
       }}>
         <Button type="link" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{text}</Button>
       </Link>

@@ -6,7 +6,7 @@ import img from "../assets/logo.gif"
 
 const { Header, Content, Footer } = Layout
 
-const JudgeStatusPage = () => {
+const StudentsPage = () => {
   const columns = [
     {
       title: <p style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>学生编号</p>,
@@ -30,7 +30,7 @@ const JudgeStatusPage = () => {
       title: <p style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>学习情况</p>,
       key: "operation",
       render: (_, record) => <Link to={{
-        pathname: "/judgeResultStatistic"
+        pathname: "/study"
       }}>
         <Button type="link" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>查看</Button>
       </Link>
@@ -84,4 +84,4 @@ const JudgeStatusPage = () => {
   </Layout>)
 }
 
-export default JudgeStatusPage
+export default StudentsPage

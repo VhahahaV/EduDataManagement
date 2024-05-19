@@ -1,8 +1,7 @@
 import React, { useState } from "react"
 import { Button, Card, Form, Input, Menu, message, Layout } from "antd"
+import { Link } from "react-router-dom"
 import Navbar from "../component/Navbar"
-import { login, register } from "../service/user"
-import { setCookie } from "../utility/cookie"
 import img from "../assets/logo.gif"
 
 const { Header, Content, Footer, Sider } = Layout
@@ -10,12 +9,16 @@ const { Header, Content, Footer, Sider } = Layout
 const LoginPage = (props) => {
 
 
-  const [currentKey, setCurrentKey] = useState("login")
+  const [currentKey, setCurrentKey] = useState("teacher")
 
   const menuItems = [
     {
-      label: "Login",
-      key: "login",
+      label: "Student",
+      key: "student",
+    },
+    {
+      label: "Teacher",
+      key: "teacher"
     },
     {
       label: "Register",
@@ -44,7 +47,7 @@ const LoginPage = (props) => {
         <Card style={{ width: "30vw", margin: "10vh auto" }}>
           <Menu
             items={menuItems}
-            defaultSelectedKeys={["login"]}
+            defaultSelectedKeys={["teacher"]}
             mode="horizontal"
             onClick={onClickMenu} />
           <div style={{ marginTop: "32px" }}>
@@ -59,42 +62,44 @@ const LoginPage = (props) => {
 }
 
 function ContentBox (props) {
-  if (props.currentKey === "login") {
-    return <LoginBox />
+  if (props.currentKey === "student") {
+    return <LoginBox_Student />
+  } else if (props.currentKey === "teacher") {
+    return <LoginBox_Teacher />
   } else {
     return <RegisterBox />
   }
 }
 
-function LoginBox (props) {
+function LoginBox_Student (props) {
   const [messageApi, contextHolder] = message.useMessage()
 
-  const onFinish = (values) => {
-    login(values, (result) => {
-      const code = result.code
-      const msg = result.msg
-      const token = result.data
-      if (code !== undefined && code === 1) {
-        messageApi.info("success")
-        setCookie("token", token, 1000 * 60)
-        setTimeout(() => {
-          window.location.href = "/"
-        }, 1000)
-      } else {
-        if (msg !== undefined) {
-          messageApi.info(msg)
-        } else {
-          messageApi.info("error")
-        }
-      }
-    })
-  }
+  // const onFinish = (values) => {
+  //   login(values, (result) => {
+  //     const code = result.code
+  //     const msg = result.msg
+  //     const token = result.data
+  //     if (code !== undefined && code === 1) {
+  //       messageApi.info("success")
+  //       setCookie("token", token, 1000 * 60)
+  //       setTimeout(() => {
+  //         window.location.href = "/"
+  //       }, 1000)
+  //     } else {
+  //       if (msg !== undefined) {
+  //         messageApi.info(msg)
+  //       } else {
+  //         messageApi.info("error")
+  //       }
+  //     }
+  //   })
+  // }
 
   return (
     <>
       {contextHolder}
       <Form
-        onFinish={onFinish}
+        //onFinish={onFinish}
         labelCol={{
           span: 8,
         }}
@@ -119,9 +124,11 @@ function LoginBox (props) {
             span: 16,
           }}
         >
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
+          <Link to={{ pathname: "/homeStudent" }}>
+            <Button type="primary" htmlType="submit">
+              学生登录
+            </Button>
+          </Link>
         </Form.Item>
       </Form>
     </>
@@ -129,35 +136,101 @@ function LoginBox (props) {
   )
 }
 
-function RegisterBox () {
+function LoginBox_Teacher (props) {
   const [messageApi, contextHolder] = message.useMessage()
 
-  const onFinish = (values) => {
-
-    register(values, (result) => {
-      const code = result.code
-      const msg = result.msg
-      if (code !== undefined && code === 1) {
-        messageApi.info("success")
-        setTimeout(() => {
-          window.location.reload()
-        }, 1000)
-      } else {
-        if (msg !== undefined) {
-          messageApi.info(msg)
-        } else {
-          messageApi.info("error")
-        }
-      }
-    })
-
-  }
+  // const onFinish = (values) => {
+  //   login(values, (result) => {
+  //     const code = result.code
+  //     const msg = result.msg
+  //     const token = result.data
+  //     if (code !== undefined && code === 1) {
+  //       messageApi.info("success")
+  //       setCookie("token", token, 1000 * 60)
+  //       setTimeout(() => {
+  //         window.location.href = "/"
+  //       }, 1000)
+  //     } else {
+  //       if (msg !== undefined) {
+  //         messageApi.info(msg)
+  //       } else {
+  //         messageApi.info("error")
+  //       }
+  //     }
+  //   })
+  // }
 
   return (
     <>
       {contextHolder}
       <Form
-        onFinish={onFinish}
+        //onFinish={onFinish}
+        labelCol={{
+          span: 8,
+        }}
+        wrapperCol={{
+          span: 16,
+        }}
+        style={{
+          maxWidth: 600,
+        }}
+      >
+        <Form.Item label="Username" name="username"
+          rules={[{ required: "true", message: "please input your username" }]}>
+          <Input />
+        </Form.Item>
+        <Form.Item label="Password" name="password"
+          rules={[{ required: "true", message: "please input your password" }]}>
+          <Input.Password />
+        </Form.Item>
+        <Form.Item
+          wrapperCol={{
+            offset: 8,
+            span: 16,
+          }}
+        >
+          <Link to={{ pathname: "/home" }}>
+            <Button type="primary" htmlType="submit">
+              教师登录
+            </Button>
+          </Link>
+        </Form.Item>
+      </Form>
+    </>
+
+  )
+}
+
+
+function RegisterBox () {
+  const [messageApi, contextHolder] = message.useMessage()
+
+  // const onFinish = (values) => {
+
+  //   register(values, (result) => {
+  //     const code = result.code
+  //     const msg = result.msg
+  //     if (code !== undefined && code === 1) {
+  //       messageApi.info("success")
+  //       setTimeout(() => {
+  //         window.location.reload()
+  //       }, 1000)
+  //     } else {
+  //       if (msg !== undefined) {
+  //         messageApi.info(msg)
+  //       } else {
+  //         messageApi.info("error")
+  //       }
+  //     }
+  //   })
+
+  // }
+
+  return (
+    <>
+      {contextHolder}
+      <Form
+        //onFinish={onFinish}
         labelCol={{
           span: 8,
         }}
@@ -258,9 +331,11 @@ function RegisterBox () {
             span: 16,
           }}
         >
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
+          <Link to={{ pathname: "/home" }}>
+            <Button type="primary" htmlType="submit">
+              注册
+            </Button>
+          </Link>
         </Form.Item>
       </Form>
     </>

@@ -6,11 +6,12 @@ import { Link } from "react-router-dom"
 import img from "../assets/logo.gif"
 import { useEffect } from "react"
 import { getAnnouncement, getAnnouncementById } from "../service/announcement"
+import Navbar_student from "../component/Navbar_student"
 
 const { Header, Content, Footer } = Layout
 
 
-const TestPage = (props) => {
+const HomeStudentPage = (props) => {
   const [announcements, setAnnouncements] = useState([])
   const columns = [
     {
@@ -44,7 +45,7 @@ const TestPage = (props) => {
       dataIndex: 'className',
       key: 'className',
       render: (text, record) => <Link to={{
-        pathname: "/rank",
+        pathname: "/classStudent",
       }}>
         <Button type="link" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{text}</Button>
       </Link>
@@ -80,7 +81,7 @@ const TestPage = (props) => {
       title: <p style={{ fontSize: "17px", fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>操作</p>,
       key: 'Operation',
       render: (_, record) => <Link to={{
-        pathname: "/judgeResultStatistic",
+        pathname: "/study",
       }}>
         <Button type="link" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>查看</Button>
       </Link>
@@ -158,7 +159,7 @@ const TestPage = (props) => {
     <Header className="header">
       <img src={img} className="img"></img>
       <div className="logo" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>学不会平台</div>
-      <Navbar />
+      <Navbar_student />
     </Header>
 
     <Content>
@@ -204,4 +205,4 @@ const TestPage = (props) => {
 }
 
 
-export default TestPage
+export default HomeStudentPage

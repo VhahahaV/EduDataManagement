@@ -4,7 +4,7 @@ import { checkAuth, logout } from "../service/user"
 import { HomeOutlined, DatabaseOutlined, DashboardOutlined, LineChartOutlined, AppstoreAddOutlined, CaretDownOutlined } from "@ant-design/icons"
 import { Link } from "react-router-dom"
 
-const Navbar = (props) => {
+const Navbar_student = (props) => {
   const [username, setUsername] = useState("")
 
   useEffect(() => {
@@ -54,7 +54,7 @@ const PageMenu = (props) => {
         <span style={{ margin: "auto 8px auto auto", }}>
           <DatabaseOutlined />
         </span>
-        课程
+        我的课程
       </div>
       ),
     },
@@ -64,7 +64,7 @@ const PageMenu = (props) => {
         <span style={{ margin: "auto 8px auto auto" }}>
           <DashboardOutlined />
         </span>
-        学生
+        我的学习
       </div>)
     },
     {
@@ -80,8 +80,8 @@ const PageMenu = (props) => {
 
   const switchTable = [
     "/home",
-    "/classesTeacher",
-    "/students",
+    "/classesStudent",
+    "/judgeStatus",
     "/admin"
   ]
 
@@ -95,4 +95,4 @@ const PageMenu = (props) => {
     }} />
 }
 
-export default Navbar
+export default Navbar_student

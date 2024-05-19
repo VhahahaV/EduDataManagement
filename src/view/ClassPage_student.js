@@ -6,10 +6,10 @@ import { Link } from "react-router-dom"
 const { Title, Paragraph, Text } = Typography
 const { Panel } = Collapse
 
+
 const { Header, Content, Footer, Sider } = Layout
 
-const ProblemPage = (props) => {
-
+const ClassStudentPage = (props) => {
   const students = [
     {
       id: 1,
@@ -57,11 +57,7 @@ const ProblemPage = (props) => {
       title: <p style={{ fontSize: "17px", fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>学生昵称</p>,
       dataIndex: 'name',
       key: 'name',
-      render: (text, record) => <Link to={{
-        pathname: "/judgeResultStatistic",
-      }}>
-        <Button type="link" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{text}</Button>
-      </Link>
+      render: (text) => <span style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{text}</span>
     },
     {
       title: <p style={{ fontSize: "17px", fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>学习进度</p>,
@@ -183,13 +179,19 @@ const ProblemPage = (props) => {
             borderRadius: "8px",
             marginBottom: "16px"
           }}>
-            <Title level={4}>课程数据</Title>
-            <Paragraph>总学习时长：100小时</Paragraph>
-            <Paragraph>选课人数：10</Paragraph>
-            <Paragraph>完课情况：3/10</Paragraph>
-            <Paragraph>平均分：60</Paragraph>
+            <Title level={4}>我的学习</Title>
+            <Paragraph>学习时长：20小时</Paragraph>
+            <Paragraph>课程进度：16/48</Paragraph>
+            <Paragraph>作业完成：10/20</Paragraph>
+            <Paragraph>课程分数：85</Paragraph>
             <Paragraph>课程教师：武忠祥，张宇</Paragraph>
-            <Paragraph>优秀率：0%</Paragraph>
+            <Paragraph>
+              <Link to={{
+                pathname: "/study"
+              }}>
+                <Button type="link">查看学习详情</Button>
+              </Link>
+            </Paragraph>
           </Content>
         </Row>
         <Row>
@@ -209,4 +211,4 @@ const ProblemPage = (props) => {
   </Layout >)
 }
 
-export default ProblemPage
+export default ClassStudentPage

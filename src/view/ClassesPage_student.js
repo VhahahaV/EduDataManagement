@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 import img from "../assets/logo.gif"
 
 const { Header, Content, Footer } = Layout
-const ProblemsPage = (props) => {
+const ClassesStudentPage = (props) => {
   const columns = [
     {
       title: <p style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>课程编号</p>,
@@ -34,7 +34,7 @@ const ProblemsPage = (props) => {
       title: <p style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>操作</p>,
       key: "operation",
       render: (_, record) => <Link to={{
-        pathname: "/problem",
+        pathname: "/classStudent",
         search: "?id=" + record.id
       }}>
         <Button type="link" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>查看</Button>
@@ -117,4 +117,4 @@ const ProblemsPage = (props) => {
   </Layout>)
 }
 
-export default ProblemsPage
+export default ClassesStudentPage

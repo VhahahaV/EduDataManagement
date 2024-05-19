@@ -69,7 +69,7 @@ const learningIndicators = (
   />
 )
 
-const JudgeResultStatisticPage = (props) => {
+const StudyPage = (props) => {
   const chapterCompletion = (
     <Collapse defaultActiveKey={['1', '2']}>
       {studentCourseData.chapters.map((chapter, index) => (
@@ -137,4 +137,4 @@ const JudgeResultStatisticPage = (props) => {
   )
 }
 
-export default JudgeResultStatisticPage
+export default StudyPage
