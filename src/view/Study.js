@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
   Layout,
   Card,
@@ -11,13 +11,13 @@ import {
   Space,
   Divider,
   Statistic,
-  Tooltip,
   Button,
 } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import Navbar from "../component/Navbar"
 import { Link } from "react-router-dom"
 import img from "../assets/logo.gif"
+import * as echarts from 'echarts'
 
 const { Text, Title } = Typography
 const { Meta } = Card
@@ -70,6 +70,72 @@ const learningIndicators = (
 )
 
 const StudyPage = (props) => {
+
+  const scoreTrendChartRef = useRef(null)
+  const chapterCompletionChartRef = useRef(null)
+
+  // 使用 useEffect 钩子来处理副作用
+  useEffect(() => {
+    // 初始化成绩趋势图
+    if (scoreTrendChartRef.current) {
+      const scoreTrendChart = echarts.init(scoreTrendChartRef.current)
+      scoreTrendChart.setOption({
+        title: { text: '成绩趋势' },
+        tooltip: {},
+        xAxis: {
+          data: ['时间1', '时间2', '时间3'], // 替换为具体的时间点
+        },
+        yAxis: {},
+        series: [
+          {
+            name: '成绩',
+            type: 'line',
+            data: [studentCourseData.score, 90, 85], // 替换为具体的成绩数据
+          },
+        ],
+      })
+    }
+
+    // 初始化章节完成率饼图
+    if (chapterCompletionChartRef.current) {
+      const chapterCompletionChart = echarts.init(chapterCompletionChartRef.current)
+      chapterCompletionChart.setOption({
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)',
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'left',
+        },
+        series: [
+          {
+            name: '访问来源',
+            type: 'pie',
+            radius: '50%',
+            data: [
+              {
+                value: studentCourseData.chapters.filter(chapter => chapter.completed).length,
+                name: '已完成',
+              },
+              {
+                value: studentCourseData.chapters.filter(chapter => !chapter.completed).length,
+                name: '未完成',
+              },
+            ],
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
+              },
+            },
+          },
+        ],
+      })
+    }
+  }, []) // 空依赖数组意味着这个 effect 只会在组件挂载后运行一次
+
   const chapterCompletion = (
     <Collapse defaultActiveKey={['1', '2']}>
       {studentCourseData.chapters.map((chapter, index) => (
@@ -127,6 +193,22 @@ const StudyPage = (props) => {
               <Divider>章节完成情况</Divider>
               {chapterCompletion}
             </Card>
+
+            <div style={{ padding: '16px' }}>
+              <Card
+                title="成绩趋势图"
+                style={{ width: '100%', marginBottom: 24 }}
+              >
+                {/* 使用 ref 引用 DOM 元素 */}
+                <div id="score-trend-chart" ref={scoreTrendChartRef} style={{ width: '100%', height: 300 }} />
+              </Card>
+              <Card
+                title="章节完成率"
+                style={{ width: '100%', marginBottom: 24 }}
+              >
+                <div id="chapter-completion-chart" ref={chapterCompletionChartRef} style={{ width: '100%', height: 300 }} />
+              </Card>
+            </div>
           </div>
         </Layout>
       </Content>
