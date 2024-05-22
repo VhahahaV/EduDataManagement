@@ -18,6 +18,7 @@ import Navbar from "../component/Navbar"
 import { Link } from "react-router-dom"
 import img from "../assets/logo.gif"
 import * as echarts from 'echarts'
+import jsPDF from 'jspdf'
 
 const { Text, Title } = Typography
 const { Meta } = Card
@@ -69,10 +70,33 @@ const learningIndicators = (
   />
 )
 
+
+const reportData = {
+  name: "John Doe",
+  date: "2024-05-20",
+  details: "This is the report detail content.",
+}
+
+
+const generatePDF = () => {
+  const doc = new jsPDF()
+
+  // 假设reportData是一个包含报告内容的对象
+  // 你可以根据需要调整内容和样式
+  doc.text("Report Title", 10, 10)
+  doc.text(`Name: ${reportData.name}`, 10, 20)
+  doc.text(`Date: ${reportData.date}`, 10, 30)
+  doc.text(`Details: ${reportData.details}`, 10, 40)
+
+  doc.save("report.pdf")
+}
+
 const StudyPage = (props) => {
 
   const scoreTrendChartRef = useRef(null)
   const chapterCompletionChartRef = useRef(null)
+  const homeworkCompletionChartRef = useRef(null)
+  const gradeAnalysisChartRef = useRef(null)
 
   // 使用 useEffect 钩子来处理副作用
   useEffect(() => {
@@ -134,7 +158,67 @@ const StudyPage = (props) => {
         ],
       })
     }
+
+    // 初始化作业完成情况图表
+    if (homeworkCompletionChartRef.current) {
+      const homeworkCompletionChart = echarts.init(homeworkCompletionChartRef.current)
+      homeworkCompletionChart.setOption({
+        title: { text: '' },
+        tooltip: {},
+        xAxis: {
+          type: 'category',
+          data: ['作业1', '作业2', '作业3', '作业4', '作业5', '作业6'] // 假设有6个作业
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            data: [80, 90, 70, 85, 95, 75], // 假设的作业完成百分比
+            type: 'bar'
+          }
+        ]
+      })
+    }
+
+    // 初始化成绩分析图表
+    if (gradeAnalysisChartRef.current) {
+      const gradeAnalysisChart = echarts.init(gradeAnalysisChartRef.current)
+      gradeAnalysisChart.setOption({
+        title: { text: '' },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)'
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'left'
+        },
+        series: [
+          {
+            name: '成绩分布',
+            type: 'pie',
+            radius: '50%',
+            data: [
+              { value: 10, name: '优秀' },
+              { value: 15, name: '良好' },
+              { value: 5, name: '中等' },
+              { value: 0, name: '待提高' }
+            ],
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            }
+          }
+        ]
+      })
+    }
+
   }, []) // 空依赖数组意味着这个 effect 只会在组件挂载后运行一次
+
 
   const chapterCompletion = (
     <Collapse defaultActiveKey={['1', '2']}>
@@ -209,7 +293,29 @@ const StudyPage = (props) => {
                 <div id="chapter-completion-chart" ref={chapterCompletionChartRef} style={{ width: '100%', height: 300 }} />
               </Card>
             </div>
+
+            <div style={{ padding: '16px' }}>
+              <Card
+                title="作业完成情况"
+                style={{ width: '100%', marginBottom: 24 }}
+              >
+                {/* 使用 ref 引用 DOM 元素 */}
+                <div id="homework-completion-chart" ref={homeworkCompletionChartRef} style={{ width: '100%', height: 300 }} />
+              </Card>
+              <Card
+                title="成绩分析"
+                style={{ width: '100%', marginBottom: 24 }}
+              >
+                <div id="grade-analysis-chart" ref={gradeAnalysisChartRef} style={{ width: '100%', height: 300 }} />
+              </Card>
+            </div>
           </div>
+
+          {/* <div>
+            <Button type='primary' onClick={generatePDF}>
+              下载报告
+            </Button>
+          </div> */}
         </Layout>
       </Content>
       <Footer style={{ textAlign: 'center' }}>

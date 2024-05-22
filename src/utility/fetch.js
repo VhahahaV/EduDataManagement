@@ -57,7 +57,6 @@ export const postRequest_file = (url, values, callback) => {
 export const getRequest_noToken = (url, callback) => {
   fetch(url, {
     method: "GET",
-    credentials: "include",
   })
     .then((response) => response.json())
     .then((data) => {

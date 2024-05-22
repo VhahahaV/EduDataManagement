@@ -3,10 +3,18 @@ import React, { useEffect, useState } from "react"
 import Navbar from "../component/Navbar"
 import { Link } from "react-router-dom"
 import img from "../assets/logo.gif"
+import { getStudents } from "../service/students"
 
 const { Header, Content, Footer } = Layout
 
 const StudentsPage = () => {
+
+  useEffect(() => {
+    getStudents((data) => {
+      console.log(data)
+    })
+  }, [])
+
   const columns = [
     {
       title: <p style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>学生编号</p>,
