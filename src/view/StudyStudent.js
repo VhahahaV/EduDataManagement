@@ -14,7 +14,7 @@ import {
   Button,
 } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import Navbar from "../component/Navbar"
+import Navbar_student from "../component/Navbar_student"
 import { Link } from "react-router-dom"
 import img from "../assets/logo.gif"
 import * as echarts from 'echarts'
@@ -26,32 +26,6 @@ const { Text, Title } = Typography
 const { Meta } = Card
 const { Header, Content, Footer, Sider } = Layout
 const { Panel } = Collapse
-
-const studentCourseData = {
-  name: 'Lyican',
-  course: '高等数学',
-  score: 85,
-  homeworkSubmitted: 10,
-  homeworkTotal: 12,
-  attendance: 15,
-  feedback: '这门课程非常有趣，我学到了很多。',
-  // 模拟章节完成情况数据
-  chapters: [
-    { title: '第一章', completed: true },
-    { title: '第二章', completed: true },
-    { title: '第三章', completed: false },
-    // 更多章节...
-  ],
-  // 模拟学习时长统计数据
-  studyDuration: '总学习时长：20小时',
-  // 成绩分析数据
-  gradeAnalysis: {
-    excellent: 10,
-    good: 15,
-    average: 5,
-    poor: 0,
-  },
-}
 
 
 const reportData = {
@@ -74,7 +48,7 @@ const generatePDF = () => {
   doc.save("report.pdf")
 }
 
-const StudyPage = (props) => {
+const StudyStudentPage = (props) => {
 
   const [params] = useSearchParams()
   const id = params.get("id")
@@ -153,7 +127,7 @@ const StudyPage = (props) => {
         <Header className="header">
           <img src={img} className="img" />
           <div className="logo" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>学不会平台</div>
-          <Navbar />
+          <Navbar_student />
         </Header>
         <Content>
           <Layout style={{ padding: '24px 96px' }}>
@@ -196,4 +170,4 @@ const StudyPage = (props) => {
   )
 }
 
-export default StudyPage
+export default StudyStudentPage

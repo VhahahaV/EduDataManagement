@@ -2,15 +2,53 @@ import React, { useState } from "react"
 import Navbar from "../component/Navbar"
 import { Button, Col, Row, Form, Layout, Table, Upload, Card } from "antd"
 import "../App.css"
-import { Link } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 import img from "../assets/logo.gif"
 import { useEffect } from "react"
-import { getAnnouncement, getAnnouncementById } from "../service/announcement"
-
+import { getClasses, getCourseTeachers, getStudentCourseDataByCourseId } from "../service/students"
+import { getAnnouncementById, getAnnouncements } from "../service/students"
 const { Header, Content, Footer } = Layout
 
 const HomePage = () => {
   const [announcements, setAnnouncements] = useState([])
+  const [params] = useSearchParams()
+  const [courses, setCourses] = useState([])
+  const [students, setStudents] = useState([])
+  const teacherId = params.get("teacherId")
+
+  useEffect(() => {
+    getClasses((data) => {
+      console.log(data.data)
+      getCourseTeachers((result) => {
+        let coursesId = []
+        let courses = []
+        let students = []
+        console.log(result.data)
+        for (let i = 0; i < result.data.length; i++) {
+          if (result.data[i].teacher == teacherId) {
+            coursesId.push(result.data[i].course)
+          }
+        }
+        for (let j = 0; j < coursesId.length; j++) {
+          getStudentCourseDataByCourseId(coursesId[j], (student_data) => {
+            //console.log(student_data.data)
+            for (let z = 0; z < student_data.data.length; z++) {
+              students.push(student_data.data[z])
+            }
+            setStudents(students)
+            //console.log(students)
+          })
+          for (let k = 0; k < data.data.length; k++) {
+            if (data.data[k].id == coursesId[j]) {
+              courses.push(data.data[k])
+            }
+          }
+        }
+        setCourses(courses)
+      })
+    })
+  }, [])
+
   const columns = [
     {
       title: <p style={{ fontSize: "17px", fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>公告标题</p>,
@@ -18,7 +56,7 @@ const HomePage = () => {
       key: 'title',
       render: (text, record) => <Link to={{
         pathname: "/announcement",
-        search: "?id=" + record.id
+        search: "?id=" + record.id + "&teacherId=" + teacherId
       }}>
         <Button type="link" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{text}</Button>
       </Link>
@@ -43,8 +81,8 @@ const HomePage = () => {
       dataIndex: 'className',
       key: 'className',
       render: (text, record) => <Link to={{
-        pathname: "/problem",
-        search: "?id=" + 1
+        pathname: "/classTeacher",
+        search: "?id=" + record.id + "&teacherId=" + teacherId
       }}>
         <Button type="link" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{text}</Button>
       </Link>
@@ -57,151 +95,105 @@ const HomePage = () => {
     },
     {
       title: <p style={{ fontSize: "17px", fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>授课教师</p>,
-      dataIndex: 'classTeacher',
-      key: 'classTeacher',
-      render: (text) => <span style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{text}</span>
+      dataIndex: 'teachers',
+      key: 'teachers',
+      render: (teachers) => {
+        const teacherNames = teachers.map(teacher => teacher.name)
+        return <span style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>
+          {teacherNames.join(",")}
+        </span>
+      }
     }
   ]
 
   const columns2 = [
     {
       title: <p style={{ fontSize: "17px", fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>学生昵称</p>,
-      dataIndex: 'Name',
-      key: 'Name',
-      render: (text, record) => <Link to={{
+      dataIndex: 'student',
+      key: 'student',
+      render: (_, record) => <Link to={{
         pathname: "/study",
+        search: "?id=" + record.id + "&teacherId=" + teacherId
       }}>
-        <Button type="link" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{text}</Button>
+        <Button type="link" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{record.student.name}</Button>
       </Link>
     },
     {
       title: <p style={{ fontSize: "17px", fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>学生课程</p>,
       dataIndex: 'class',
       key: 'class',
-      render: (text) => <span style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{text}</span>
+      render: (_, record) => <span style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{record.course.className}</span>
     },
     {
       title: <p style={{ fontSize: "17px", fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>学生进度</p>,
       dataIndex: 'process',
       key: 'process',
-      render: (text) => <span style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{text + "%"}</span>
+      render: (text) => <span style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{text}</span>
     }
   ]
 
-  const classes = [
-    {
-      id: 1,
-      className: "高等数学",
-      classTime: "2024.5.1-2025.5.1",
-      classTeacher: "武忠祥"
-    },
-    {
-      id: 2,
-      className: "线性代数",
-      classTime: "2024.5.1-2025.5.1",
-      classTeacher: "武忠祥"
-    },
-    {
-      id: 3,
-      className: "概率论与梳理统计",
-      classTime: "2024.5.1-2025.5.1",
-      classTeacher: "武忠祥"
-    },
-    {
-      id: 4,
-      className: "软件工程原理与实践",
-      classTime: "2024.5.1-2025.5.1",
-      classTeacher: "沈备军"
-    }
-  ]
 
-  const students = [
-    {
-      id: 1,
-      Name: "Lyican",
-      class: "高等数学",
-      process: 100
-    },
-    {
-      id: 2,
-      Name: "Lyican",
-      class: "线性代数",
-      process: 0
-    },
-    {
-      id: 3,
-      Name: "Lyican",
-      class: "概率论与数理统计",
-      process: 0
-    },
-    {
-      id: 4,
-      Name: "Sske",
-      class: "高等数学",
-      process: 70
-    },
-  ]
+
 
   useEffect(() => {
-    getAnnouncement((result) => {
+    getAnnouncements((data) => {
       //console.log(result)
-      if (result.code === 1) {
-        setAnnouncements(result.data)
-        //console.log(result.data)
-      } else {
-        console.log(result.msg)
-      }
+      setAnnouncements(data.data)
     })
   }, [])
 
 
-  return (<Layout style={{ minHeight: "100vh" }}>
-    <Header className="header">
-      <img src={img} className="img"></img>
-      <div className="logo" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>学不会平台</div>
-      <Navbar />
-    </Header>
+  return (
+    courses && students && announcements ?
+      <Layout style={{ minHeight: "100vh" }}>
+        <Header className="header">
+          <img src={img} className="img"></img>
+          <div className="logo" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>学不会平台</div>
+          <Navbar />
+        </Header>
 
-    <Content>
-      <Col>
-        <Row>
-          <Content style={{ margin: "64px 64px", backgroundColor: "#fff", padding: "32px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)", borderRadius: "8px" }}>
-            <h1 style={{ fontSize: "25px", fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>平台公告栏</h1>
-            <Table dataSource={announcements} columns={columns} />
-          </Content>
-        </Row>
-        <Row>
-          <Col span={12}>
-            <Content style={{
-              marginLeft: "64px",
-              boxShadow: " 0 2px 8px rgba(0, 0, 0, 0.15)",
-              border: " 1px solid rgba(0, 0, 0, 0.1)",
-              padding: "16px",
-              borderRadius: "8px"
-            }}>
-              <h1 style={{ fontSize: "25px", fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>我教授的课程</h1>
-              <Table dataSource={classes} columns={columns1} />
-            </Content>
+        <Content>
+          <Col>
+            <Row>
+              <Content style={{ margin: "64px 64px", backgroundColor: "#fff", padding: "32px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)", borderRadius: "8px" }}>
+                <h1 style={{ fontSize: "25px", fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>平台公告栏</h1>
+                <Table dataSource={announcements} columns={columns} />
+              </Content>
+            </Row>
+            <Row>
+              <Col span={12}>
+                <Content style={{
+                  marginLeft: "64px",
+                  boxShadow: " 0 2px 8px rgba(0, 0, 0, 0.15)",
+                  border: " 1px solid rgba(0, 0, 0, 0.1)",
+                  padding: "16px",
+                  borderRadius: "8px"
+                }}>
+                  <h1 style={{ fontSize: "25px", fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>我教授的课程</h1>
+                  <Table dataSource={courses} columns={columns1} />
+                </Content>
+              </Col>
+              <Col span={12}>
+                <Content style={{
+                  marginLeft: "16px",
+                  marginRight: "64px",
+                  boxShadow: " 0 2px 8px rgba(0, 0, 0, 0.15)",
+                  border: " 1px solid rgba(0, 0, 0, 0.1)",
+                  padding: "16px",
+                  borderRadius: "8px"
+                }}>
+                  <h1 style={{ fontSize: "25px", fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>我的学生</h1>
+                  <Table dataSource={students} columns={columns2} />
+                </Content>
+              </Col>
+            </Row>
           </Col>
-          <Col span={12}>
-            <Content style={{
-              marginLeft: "16px",
-              marginRight: "64px",
-              boxShadow: " 0 2px 8px rgba(0, 0, 0, 0.15)",
-              border: " 1px solid rgba(0, 0, 0, 0.1)",
-              padding: "16px",
-              borderRadius: "8px"
-            }}>
-              <h1 style={{ fontSize: "25px", fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>我的学生</h1>
-              <Table dataSource={students} columns={columns2} />
-            </Content>
-          </Col>
-        </Row>
-      </Col>
-    </Content>
-    <Footer>
-    </Footer>
-  </Layout>)
+        </Content>
+        <Footer>
+        </Footer>
+      </Layout>
+      :
+      null)
 }
 
 export default HomePage

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { Menu, Button } from "antd"
 import { checkAuth, logout } from "../service/user"
 import { HomeOutlined, DatabaseOutlined, DashboardOutlined, LineChartOutlined, AppstoreAddOutlined, CaretDownOutlined } from "@ant-design/icons"
-import { Link } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 
 const Navbar_student = (props) => {
   const [username, setUsername] = useState("")
@@ -37,6 +37,8 @@ const Navbar_student = (props) => {
 }
 
 const PageMenu = (props) => {
+  const [params] = useSearchParams()
+  const studentId = params.get("studentId")
   const items = [
     {
       key: 0,
@@ -66,23 +68,13 @@ const PageMenu = (props) => {
         </span>
         我的学习
       </div>)
-    },
-    {
-      key: 3,
-      label: (<div className="menu-item" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>
-        <span style={{ margin: "auto 8px auto auto" }}>
-          <DashboardOutlined />
-        </span>
-        管理
-      </div>)
     }
   ]
 
   const switchTable = [
-    "/home",
-    "/classesStudent",
-    "/judgeStatus",
-    "/admin"
+    "/homeStudent?studentId=" + studentId,
+    "/classesStudent?studentId=" + studentId,
+    "/MyStudy?studentId=" + studentId,
   ]
 
   return <Menu

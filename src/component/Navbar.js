@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react"
 import { Menu, Button } from "antd"
 import { checkAuth, logout } from "../service/user"
 import { HomeOutlined, DatabaseOutlined, DashboardOutlined, LineChartOutlined, AppstoreAddOutlined, CaretDownOutlined } from "@ant-design/icons"
-import { Link } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 
 const Navbar = (props) => {
   const [username, setUsername] = useState("")
-
   useEffect(() => {
     checkAuth((result) => {
       if (result.code === 200) {
@@ -37,6 +36,9 @@ const Navbar = (props) => {
 }
 
 const PageMenu = (props) => {
+  const [params] = useSearchParams()
+  const teacherId = params.get("teacherId")
+
   const items = [
     {
       key: 0,
@@ -66,23 +68,13 @@ const PageMenu = (props) => {
         </span>
         学生
       </div>)
-    },
-    {
-      key: 3,
-      label: (<div className="menu-item" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>
-        <span style={{ margin: "auto 8px auto auto" }}>
-          <DashboardOutlined />
-        </span>
-        管理
-      </div>)
     }
   ]
 
   const switchTable = [
-    "/home",
-    "/classesTeacher",
-    "/students",
-    "/admin"
+    `/home?teacherId=${teacherId}`,
+    `/classesTeacher?teacherId=${teacherId}`,
+    `/students?teacherId=${teacherId}`,
   ]
 
   return <Menu

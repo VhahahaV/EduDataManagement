@@ -1,17 +1,47 @@
 import { Table, Button, Layout, Tag } from "antd"
 import React, { useEffect, useState } from "react"
 import Navbar from "../component/Navbar"
-import { Link } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 import img from "../assets/logo.gif"
+import { getClasses, getCourseTeachers } from "../service/students"
 
 const { Header, Content, Footer } = Layout
 const ClassesTeacherPage = (props) => {
+
+  const [courses, setCourses] = useState([])
+  const [params] = useSearchParams()
+  const teacherId = params.get("teacherId")
+
+  useEffect(() => {
+    getClasses((data) => {
+      console.log(data.data)
+      getCourseTeachers((result) => {
+        let coursesId = []
+        let courses = []
+        console.log(result.data)
+        for (let i = 0; i < result.data.length; i++) {
+          if (result.data[i].teacher == teacherId) {
+            coursesId.push(result.data[i].course)
+          }
+        }
+        for (let j = 0; j < coursesId.length; j++) {
+          for (let k = 0; k < data.data.length; k++) {
+            if (data.data[k].id == coursesId[j]) {
+              courses.push(data.data[k])
+            }
+          }
+        }
+        setCourses(courses)
+      })
+    })
+  }, [])
+
   const columns = [
     {
       title: <p style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>课程编号</p>,
       dataIndex: "id",
       key: "id",
-      render: (text) => <span style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{text}</span>
+      render: (_, record) => <span style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{record.id}</span>
     },
     {
       title: <p style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>课程名称</p>,
@@ -21,10 +51,10 @@ const ClassesTeacherPage = (props) => {
     },
     {
       title: <p style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>课程教师</p>,
-      dataIndex: "classTeacher",
-      key: "classTeacher",
-      render: (teachers) => {
-        const teacherNames = teachers.map(teacher => teacher.name)
+      dataIndex: "teachers",
+      key: "teachers",
+      render: (_, record) => {
+        const teacherNames = record.teachers.map(teacher => teacher.name)
         return <span style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>
           {teacherNames.join(",")}
         </span>
@@ -35,86 +65,34 @@ const ClassesTeacherPage = (props) => {
       key: "operation",
       render: (_, record) => <Link to={{
         pathname: "/classTeacher",
-        search: "?id=" + record.id
+        search: "?id=" + record.id + "&teacherId=" + teacherId
       }}>
         <Button type="link" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>查看</Button>
       </Link>
     }
   ]
 
-  const data = [
-    {
-      id: 1,
-      className: "高等数学",
-      classTeacher: [
-        {
-          id: 1,
-          name: "武忠祥"
-        },
-        {
-          id: 2,
-          name: "张宇"
-        }
-      ],
-    },
-    {
-      id: 2,
-      className: "概率论与数理统计",
-      classTeacher: [
-        {
-          id: 1,
-          name: "武忠祥"
-        },
-        {
-          id: 2,
-          name: "张宇"
-        }
-      ],
-    },
-    {
-      id: 3,
-      className: "线性代数",
-      classTeacher: [
-        {
-          id: 1,
-          name: "武忠祥"
-        },
-        {
-          id: 2,
-          name: "张宇"
-        }
-      ],
-    },
-    {
-      id: 4,
-      className: "软件工程原理与实践",
-      classTeacher: [
-        {
-          id: 3,
-          name: "沈备军"
-        }
-      ],
-    },
-  ]
-
-  return (<Layout style={{ minHeight: "100vh" }}>
-    <Header className="header">
-      <img src={img} className="img"></img>
-      <div className="logo" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>CodeArena</div>
-      <Navbar />
-    </Header>
-    <Content>
-      <Layout
-        style={{
-          padding: '24px 96px',
-        }}
-      >
-        <Table columns={columns} dataSource={data} />
-      </Layout>
-    </Content>
-    <Footer>
-    </Footer>
-  </Layout>)
+  return (
+    courses ?
+      <Layout style={{ minHeight: "100vh" }}>
+        <Header className="header">
+          <img src={img} className="img"></img>
+          <div className="logo" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>学不会平台</div>
+          <Navbar />
+        </Header>
+        <Content>
+          <Layout
+            style={{
+              padding: '24px 96px',
+            }}
+          >
+            <Table columns={columns} dataSource={courses} />
+          </Layout>
+        </Content>
+        <Footer>
+        </Footer>
+      </Layout> :
+      null)
 }
 
 export default ClassesTeacherPage

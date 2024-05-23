@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import Navbar from "../component/Navbar"
+import Navbar_student from "../component/Navbar_student"
 import { Layout, Card } from "antd"
 import "../App.css"
 import { useSearchParams } from "react-router-dom"
@@ -10,7 +10,7 @@ import AnnouncementInfo from "../component/AnnouncementInfo"
 
 const { Header, Content, Footer } = Layout
 
-const AnnouncementPage = (props) => {
+const AnnouncementStudentPage = (props) => {
   const [params] = useSearchParams()
   const id = params.get("id")
   const [announcement, setAnnouncement] = useState(null)
@@ -25,7 +25,7 @@ const AnnouncementPage = (props) => {
     <Header className="header">
       <img src={img} className="img"></img>
       <div className="logo" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>学不会平台</div>
-      <Navbar />
+      <Navbar_student />
     </Header>
 
     <Content >
@@ -36,4 +36,4 @@ const AnnouncementPage = (props) => {
   </Layout>)
 }
 
-export default AnnouncementPage
+export default AnnouncementStudentPage

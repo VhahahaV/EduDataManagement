@@ -7,10 +7,13 @@ import ClassesTeacherPage from "./view/ClassesPage_teacher"
 import ClassTeacherPage from "./view/ClassPage_teacher"
 import AdminPage from "./view/AdminPage"
 import AnnouncementPage from "./view/AnnouncementPage"
+import AnnouncementStudentPage from "./view/AnnouncementStudent"
 import HomeStudentPage from "./view/homeStudent"
 import ClassesStudentPage from "./view/ClassesPage_student"
 import StudentsPage from "./view/Students"
+import StudyStudentPage from "./view/StudyStudent"
 import StudyPage from "./view/Study"
+import MyStudyPage from "./view/MyStudy"
 // import "./style.css"
 
 const MainRouter = (props) => {
@@ -23,8 +26,11 @@ const MainRouter = (props) => {
     <Route path="/classTeacher" element={<ClassTeacherPage />} />
     <Route path="/classesStudent" element={<ClassesStudentPage />} />
     <Route path="/announcement" element={<AnnouncementPage />} />
+    <Route path="/announcementStudent" element={<AnnouncementStudentPage />} />
     <Route path="/students" element={<StudentsPage />} />
     <Route path="/study" element={<StudyPage />} />
+    <Route path="/MyStudy" element={<MyStudyPage />} />
+    <Route path="/studyStudent" element={<StudyStudentPage />} />
     <Route path="/admin" element={<AdminPage />} />
     <Route path="/homeStudent" element={<HomeStudentPage />} />
 
