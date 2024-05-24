@@ -23,7 +23,7 @@ const ClassTeacherPage = (props) => {
 
   useEffect(() => {
     getClassStudentById(id, (data) => {
-      console.log(data.data)
+      // console.log(data.data)
       let temp = []
       for (let i = 0; i < data.data.length; i++) {
         let student = {
@@ -35,6 +35,7 @@ const ClassTeacherPage = (props) => {
         temp.push(student)
       }
       setStudents(temp)
+      console.log("students info : ", students)
     })
   }, [])
 
