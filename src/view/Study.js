@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import {
   Layout,
   Card,
   Typography,
   List,
-  Avatar,
   Tag,
   Descriptions,
   Collapse,
@@ -12,146 +11,114 @@ import {
   Divider,
   Statistic,
   Button,
-} from 'antd'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
-import Navbar from "../component/Navbar"
-import { Link } from "react-router-dom"
-import img from "../assets/logo.gif"
-import * as echarts from 'echarts'
-import jsPDF from 'jspdf'
-import { getStudentsCourseData, getStudentCourseDataById } from '../service/students'
-import { useSearchParams } from "react-router-dom"
+  Avatar
+} from 'antd';
+import Navbar from "../component/Navbar";
+import img from "../assets/logo.gif";
+import { useSearchParams } from "react-router-dom";
+import jsPDF from 'jspdf';
+import { getStudentCourseDataById } from '../service/students';
+import { Chart } from 'react-google-charts';
 
-const { Text, Title } = Typography
-const { Meta } = Card
-const { Header, Content, Footer, Sider } = Layout
-const { Panel } = Collapse
-
-const studentCourseData = {
-  name: 'Lyican',
-  course: '高等数学',
-  score: 85,
-  homeworkSubmitted: 10,
-  homeworkTotal: 12,
-  attendance: 15,
-  feedback: '这门课程非常有趣，我学到了很多。',
-  // 模拟章节完成情况数据
-  chapters: [
-    { title: '第一章', completed: true },
-    { title: '第二章', completed: true },
-    { title: '第三章', completed: false },
-    // 更多章节...
-  ],
-  // 模拟学习时长统计数据
-  studyDuration: '总学习时长：20小时',
-  // 成绩分析数据
-  gradeAnalysis: {
-    excellent: 10,
-    good: 15,
-    average: 5,
-    poor: 0,
-  },
-}
-
+const { Text, Title } = Typography;
+const { Meta } = Card;
+const { Header, Content, Footer } = Layout;
+const { Panel } = Collapse;
 
 const reportData = {
   name: "John Doe",
   date: "2024-05-20",
   details: "This is the report detail content.",
-}
-
+};
 
 const generatePDF = () => {
-  const doc = new jsPDF()
+  const doc = new jsPDF();
+  doc.text("Report Title", 10, 10);
+  doc.text(`Name: ${reportData.name}`, 10, 20);
+  doc.text(`Date: ${reportData.date}`, 10, 30);
+  doc.text(`Details: ${reportData.details}`, 10, 40);
+  doc.save("report.pdf");
+};
 
-  // 假设reportData是一个包含报告内容的对象
-  // 你可以根据需要调整内容和样式
-  doc.text("Report Title", 10, 10)
-  doc.text(`Name: ${reportData.name}`, 10, 20)
-  doc.text(`Date: ${reportData.date}`, 10, 30)
-  doc.text(`Details: ${reportData.details}`, 10, 40)
-
-  doc.save("report.pdf")
-}
-
-const StudyPage = (props) => {
-
-  const [params] = useSearchParams()
-  const id = params.get("id")
-
-  const [courseData, setcourseData] = useState(null)
-  const [analysis, setAnalysis] = useState(null)
-  const [chapters, setChapters] = useState([])
+const StudyPage = () => {
+  const [params] = useSearchParams();
+  const id = params.get("id");
+  const [courseData, setCourseData] = useState(null);
+  const [analysis, setAnalysis] = useState(null);
+  const [chapters, setChapters] = useState([]);
 
   useEffect(() => {
     getStudentCourseDataById(id, (data) => {
-      setcourseData(data.data)
-      console.log(courseData)
-      setAnalysis(JSON.parse(data.data.gradeAnalysis))
-      setChapters(JSON.parse(data.data.chapters))
-    })
-  })
-  const learningIndicators = (
-    courseData ?
-      <List
-        itemLayout="horizontal"
-        dataSource={[
-          { type: '成绩', value: courseData.score },
-          { type: '作业提交', value: `${courseData.homeworkSubmitted}/${courseData.homeworkTotal}` },
-          { type: '出勤次数', value: courseData.attendance },
-        ]}
-        renderItem={(item, index) => (
-          <List.Item>
-            <Meta
-              title={<Text strong>{item.type}</Text>}
-              description={item.value}
-            />
-          </List.Item>
-        )}
-      />
-      :
-      null
-  )
+      setCourseData(data.data);
+      setAnalysis(JSON.parse(data.data.gradeAnalysis));
+      setChapters(JSON.parse(data.data.chapters));
+    });
+  }, [id]);
 
-  const chapterCompletion = (
-    courseData ?
-      <Collapse defaultActiveKey={['1', '2']}>
-        {chapters.map((chapter, index) => (
-          <Panel
-            header={chapter.title}
-            key={index.toString()}
-            extra={chapter.completed ? <Tag color="green">已完成</Tag> : <Tag color="red">未完成</Tag>}
-          >
-            <Text type="secondary">请完成本章节的所有练习和阅读材料。</Text>
-          </Panel>
-        ))}
-      </Collapse>
-      :
-      null
-  )
+  const learningIndicators = courseData ? (
+    <List
+      itemLayout="horizontal"
+      dataSource={[
+        { type: '成绩', value: courseData.score },
+        { type: '作业提交', value: `${courseData.homeworkSubmitted}/${courseData.homeworkTotal}` },
+        { type: '出勤次数', value: courseData.attendance },
+      ]}
+      renderItem={(item, index) => (
+        <List.Item key={index}>
+          <Meta
+            title={<Text strong>{item.type}</Text>}
+            description={item.value}
+          />
+        </List.Item>
+      )}
+    />
+  ) : null;
 
-  const gradeAnalysisStatistic = (
-    courseData ?
-      <Descriptions
-        title="成绩分析"
-        bordered
-        column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}
-      >
-        <Descriptions.Item label="优秀">{analysis.excellent}</Descriptions.Item>
-        <Descriptions.Item label="良好">{analysis.good}</Descriptions.Item>
-        <Descriptions.Item label="中等">{analysis.average}</Descriptions.Item>
-        <Descriptions.Item label="待提高">{analysis.poor}</Descriptions.Item>
-      </Descriptions>
-      :
-      null
-  )
+  const chapterCompletion = courseData ? (
+    <Collapse defaultActiveKey={['1', '2']}>
+      {chapters.map((chapter, index) => (
+        <Panel
+          header={chapter.title}
+          key={index.toString()}
+          extra={chapter.completed ? <Tag color="green">已完成</Tag> : <Tag color="red">未完成</Tag>}
+        >
+          <Text type="secondary">请完成本章节的所有练习和阅读材料。</Text>
+        </Panel>
+      ))}
+    </Collapse>
+  ) : null;
+
+  const gradeAnalysisStatistic = courseData ? (
+    <Descriptions
+      title="成绩分析"
+      bordered
+      column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}
+    >
+      <Descriptions.Item label="优秀">{analysis.excellent}</Descriptions.Item>
+      <Descriptions.Item label="良好">{analysis.good}</Descriptions.Item>
+      <Descriptions.Item label="中等">{analysis.average}</Descriptions.Item>
+      <Descriptions.Item label="待提高">{analysis.poor}</Descriptions.Item>
+    </Descriptions>
+  ) : null;
+
+  const gradeDistributionData = [
+    ['Category', 'Number of Students'],
+    ['优秀', analysis ? analysis.excellent : 0],
+    ['良好', analysis ? analysis.good : 0],
+    ['中等', analysis ? analysis.average : 0],
+    ['待提高', analysis ? analysis.poor : 0],
+  ];
+
+  const chartOptions = {
+    title: '学生成绩分布',
+    pieHole: 0.4,
+  };
 
   return (
-    courseData
-      ?
+    courseData ? (
       <Layout style={{ minHeight: '100vh' }}>
         <Header className="header">
-          <img src={img} className="img" />
+          <img src={img} className="img" alt="logo" />
           <div className="logo" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>学不会平台</div>
           <Navbar />
         </Header>
@@ -165,7 +132,7 @@ const StudyPage = (props) => {
                     <Text type="secondary">{courseData.course.className}</Text>
                   </div>
                 }
-                avatar={<Avatar>L</Avatar>}
+                avatar={<Avatar>{courseData.student.name.charAt(0)}</Avatar>}
                 extra={<Tag color="blue">优秀学生</Tag>}
               >
                 <Typography.Paragraph strong>{courseData.feedback}</Typography.Paragraph>
@@ -174,26 +141,31 @@ const StudyPage = (props) => {
                 <Space direction="vertical">
                   <Statistic title="学习时长" value={courseData.studyDuration} />
                   {gradeAnalysisStatistic}
+                  <Chart
+                    chartType="PieChart"
+                    data={gradeDistributionData}
+                    options={chartOptions}
+                    width={'100%'}
+                    height={'400px'}
+                  />
                 </Space>
                 <Divider>章节完成情况</Divider>
                 {chapterCompletion}
               </Card>
             </div>
-
-            {/* <div>
-            <Button type='primary' onClick={generatePDF}>
-              下载报告
-            </Button>
-          </div> */}
+            <div style={{ textAlign: 'center', marginTop: '20px' }}>
+              <Button type='primary' onClick={generatePDF}>
+                下载报告
+              </Button>
+            </div>
           </Layout>
         </Content>
         <Footer style={{ textAlign: 'center' }}>
           ©2023 CodeArena
         </Footer>
       </Layout>
-      :
-      null
-  )
-}
+    ) : null
+  );
+};
 
-export default StudyPage
+export default StudyPage;

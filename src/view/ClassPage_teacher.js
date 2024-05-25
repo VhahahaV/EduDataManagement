@@ -1,44 +1,89 @@
 import React, { useEffect, useState } from "react"
 import Navbar from "../component/Navbar"
-import { Button, Layout, message, Col, Row, Tabs, Descriptions, List, Table, Typography, Space, Card, Collapse, Statistic } from "antd"
+import { Button, Layout, message, Col, Row, Tabs,Progress, Descriptions, List, Table, Typography, Space, Card, Collapse, Statistic } from "antd"
 import img from "../assets/logo.gif"
+import { Chart } from 'react-google-charts';
 import { Link, useSearchParams } from "react-router-dom"
 import { getClassById, getClassStudentById } from "../service/students"
+import OpenAI from "openai";
+
 const { Title, Paragraph, Text } = Typography
 const { Panel } = Collapse
 const { Header, Content, Footer, Sider } = Layout
 const { TabPane } = Tabs
+
+const openai = new OpenAI({
+  dangerouslyAllowBrowser: true,
+  apiKey: "sk-jTX5O4SX9fkX67tR0bA58cB248Ea4fFaBc282cE2AaA98448", // Use environment variable for API key
+  baseURL: "https://free.gpt.ge/v1",
+});
 
 const ClassTeacherPage = (props) => {
   const [params] = useSearchParams()
   const id = params.get("id")
   const [detail, setDetail] = useState(null)
   const [students, setStudents] = useState([])
+  const [learningSuggestions, setLearningSuggestions] = useState("");
+
+  useEffect(() => {
+    if (students.length > 0) {
+      fetchLearningSuggestions(students);
+    }
+  }, [students]);
+
   useEffect(() => {
     getClassById(id, (data) => {
-      console.log(data.data)
+      console.log("detail info " , data.data)
       setDetail(data.data)
     })
   }, [])
 
   useEffect(() => {
     getClassStudentById(id, (data) => {
-      // console.log(data.data)
-      let temp = []
-      for (let i = 0; i < data.data.length; i++) {
-        let student = {
-          id: data.data[i].id,
-          studentId: data.data[i].student.id,
-          name: data.data[i].student.name,
-          process: data.data[i].process
-        }
-        temp.push(student)
-      }
-      setStudents(temp)
-      console.log("students info : ", students)
-    })
-  }, [])
-
+      console.log("data.data : ", data.data);
+      const temp = data.data.map(studentData => ({
+        id: studentData.id,
+        studentId: studentData.student.id,
+        name: studentData.student.name,
+        process: studentData.process,
+        chapters: JSON.parse(studentData.chapters),
+        gradeAnalysis: JSON.parse(studentData.gradeAnalysis),
+        finishClassNum: studentData.finishClassNum,
+        homeworkTotal: studentData.homeworkTotal,
+        homeworkSubmitted: studentData.homeworkSubmitted,
+        feedback: studentData.feedback,
+        score: studentData.score,
+        studyDuration: studentData.studyDuration,
+        attendance: studentData.attendance
+      }));
+      setStudents(temp);
+      console.log("students info : ", temp);
+    });
+  }, [id]);
+  const fetchLearningSuggestions = async (studentData) => {
+    const formattedData = studentData.map(student => ({
+      name: student.name,
+      score: student.score,
+      homeworkSubmitted: student.homeworkSubmitted,
+      homeworkTotal: student.homeworkTotal,
+      attendance: student.attendance,
+      feedback: student.feedback,
+      studyDuration: student.studyDuration,
+    }));
+  
+    try {
+      const response = await openai.chat.completions.create({
+        messages: [{ role: "user", content: `请用中文为一下所有学生的学习情况进行分析，并且给老师提出教学建议: ${JSON.stringify(formattedData)}` }],
+        model: 'gpt-3.5-turbo',
+      });
+  
+      setLearningSuggestions(response.choices[0].message.content);
+    } catch (error) {
+      console.error('Error fetching learning suggestions:', error);
+      setLearningSuggestions("无法获取学习建议，请稍后再试。");
+    }
+  };
+  
   const { TabPane } = Tabs
 
   const columns = [
@@ -63,37 +108,24 @@ const ClassTeacherPage = (props) => {
       title: <p style={{ fontSize: "17px", fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>学习进度</p>,
       dataIndex: 'process',
       key: 'process',
-      render: (text, record) => <span style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{text}</span>
+      // render: (text, record) => <span style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>{text}</span>
+      render: process => <Progress percent={parseFloat(process)} />
     }
   ]
+  const chartData = students.map(student => [
+    student.name,
+    parseFloat(student.studyDuration.replace(' hours', '')),
+    student.score,
+    student.homeworkSubmitted,
+    student.homeworkTotal
+  ]);
+  const options = {
+    title: "学生表现分析",
+    hAxis: { title: '学习时间 (hours)' },
+    vAxis: { title: '分数' },
+    bubble: { textStyle: { fontSize: 11 } },
+  };
 
-  const calculateAverageScore = (students) => {
-    let totalScore = 0
-    students.forEach(student => {
-      totalScore += student.score
-    })
-    return (totalScore / students.length).toFixed(2)
-  }
-
-  const calculatePassRate = (students) => {
-    let excellent = 0
-    students.forEach(student => {
-      if (student.score >= 60) {
-        excellent++
-      }
-    })
-    return (excellent / students.length * 100).toFixed(2)
-  }
-
-  const calculateExcellentRate = (students) => {
-    let excellent = 0
-    students.forEach(student => {
-      if (student.score >= 85) {
-        excellent++
-      }
-    })
-    return (excellent / students.length * 100).toFixed(2)
-  }
 
   const showTeachers = (teachers) => {
     const teacherNames = teachers.map(teacher => teacher.name)
@@ -179,7 +211,31 @@ const ClassTeacherPage = (props) => {
                       <Paragraph>{detail.classCourseDetail.preKnowledge}</Paragraph>
                     </Space>
                   </TabPane>
-                  <TabPane tab="课程评价" key="2">
+                  <TabPane tab="总体学情分析" key="2">
+                  <Chart
+                    chartType="BubbleChart"
+                    width="100%"
+                    height="400px"
+                    data={[["姓名", "分数", "学习时长 (hours)", "作业提交", "作业总数"], ...chartData]}
+                    options={options}
+                  />
+                  <List
+                    itemLayout="vertical"
+                    dataSource={students}
+                    renderItem={student => (
+                      <List.Item>
+                        <List.Item.Meta
+                          title={<span>{student.name}</span>}
+                          description={<span>Score: {student.score}</span>}
+                        />
+                        <Paragraph>学生反馈: {student.feedback}</Paragraph>
+                        <Paragraph>出勤次数: {student.attendance}</Paragraph>
+                        <Paragraph>作业提交: {student.homeworkSubmitted}/{student.homeworkTotal}</Paragraph>
+                      </List.Item>
+                    )}
+                  />
+                </TabPane>
+                <TabPane tab="课程评价" key="3">
                     <Space direction="vertical" style={{ width: '100%', padding: '0 16px' }}>
                       {detail.classCourseDetail.courseReviews.map((review, index) => (
                         <Card key={index} bordered={false} style={{ marginBottom: '16px' }}>
@@ -189,6 +245,7 @@ const ClassTeacherPage = (props) => {
                       ))}
                     </Space>
                   </TabPane>
+                  
                 </Tabs>
               </Content>
             </Row>
@@ -208,6 +265,7 @@ const ClassTeacherPage = (props) => {
                 <Paragraph>选课人数：{students.length}</Paragraph>
                 <Paragraph>完课情况：{students.filter(student => student.process == "100%").reduce((total, student) => total + 1, 0)}/{students.length}</Paragraph>
                 <Paragraph>课程教师：{showTeachers(detail.teachers)}</Paragraph>
+                
               </Content>
             </Row>
             <Row>
@@ -221,6 +279,20 @@ const ClassTeacherPage = (props) => {
                 <Title level={4}>课程学生</Title>
                 <Table columns={columns} dataSource={students} pagination={false} />
               </Content>
+            </Row>
+            <Row>
+            <Content style={{
+              marginLeft: "36px",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+              border: "1px solid rgba(0, 0, 0, 0.1)",
+              padding: "16px",
+              borderRadius: "8px",
+              marginBottom: "16px"
+            }}>
+              <Title level={4}>gpt学情分析</Title>
+              <Paragraph style={{ marginTop: '20px', padding: '30px', background: '#f0f', borderRadius: '10px' }}>{learningSuggestions}</Paragraph>
+            </Content>
+
             </Row>
           </Col>
         </Row>
