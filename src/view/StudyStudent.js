@@ -21,32 +21,12 @@ import * as echarts from 'echarts'
 import jsPDF from 'jspdf'
 import { getStudentsCourseData, getStudentCourseDataById } from '../service/students'
 import { useSearchParams } from "react-router-dom"
+import { Chart } from 'react-google-charts'
 
 const { Text, Title } = Typography
 const { Meta } = Card
 const { Header, Content, Footer, Sider } = Layout
 const { Panel } = Collapse
-
-
-const reportData = {
-  name: "John Doe",
-  date: "2024-05-20",
-  details: "This is the report detail content.",
-}
-
-
-const generatePDF = () => {
-  const doc = new jsPDF()
-
-  // 假设reportData是一个包含报告内容的对象
-  // 你可以根据需要调整内容和样式
-  doc.text("Report Title", 10, 10)
-  doc.text(`Name: ${reportData.name}`, 10, 20)
-  doc.text(`Date: ${reportData.date}`, 10, 30)
-  doc.text(`Details: ${reportData.details}`, 10, 40)
-
-  doc.save("report.pdf")
-}
 
 const StudyStudentPage = (props) => {
 
@@ -147,6 +127,20 @@ const StudyStudentPage = (props) => {
       null
   )
 
+  const gradeDistributionData = [
+    ['Category', 'Number of Students'],
+    ['优秀', analysis ? analysis.excellent : 0],
+    ['良好', analysis ? analysis.good : 0],
+    ['中等', analysis ? analysis.average : 0],
+    ['待提高', analysis ? analysis.poor : 0],
+  ]
+
+  const chartOptions = {
+    title: '学生成绩分布',
+    pieHole: 0.4,
+  }
+
+
   return (
     courseData
       ?
@@ -175,6 +169,13 @@ const StudyStudentPage = (props) => {
                 <Space direction="vertical">
                   <Statistic title="学习时长" value={courseData.studyDuration} />
                   {gradeAnalysisStatistic}
+                  <Chart
+                    chartType="PieChart"
+                    data={gradeDistributionData}
+                    options={chartOptions}
+                    width={'100%'}
+                    height={'400px'}
+                  />
                 </Space>
                 <Divider>章节完成情况</Divider>
                 {chapterCompletion}
