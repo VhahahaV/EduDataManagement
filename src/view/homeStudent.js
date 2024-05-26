@@ -98,7 +98,7 @@ const HomeStudentPage = (props) => {
       title: <p style={{ fontSize: "17px", fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>操作</p>,
       key: 'Operation',
       render: (_, record) => <Link to={{
-        pathname: "/study",
+        pathname: "/studyStudent",
         search: "?id=" + record.id + "&studentId=" + studentId
       }}>
         <Button type="link" style={{ fontFamily: "'Comic Sans MS', 'Comic Sans', cursive" }}>查看</Button>

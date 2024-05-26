@@ -20,22 +20,22 @@ export const getRequest = (url, callback) => {
     .catch((error) => console.log(error))
 }
 
-export const postRequest = (url, values, callback) => {
-  const token = getCookie("token")
+// export const postRequest = (url, values, callback) => {
+//   const token = getCookie("token")
 
-  fetch(url, {
-    method: "POST",
-    body: JSON.stringify(values),
-    credentials: "include",
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
-  })
-    .then((response) => response.json())
-    .then((values) => callback(values))
-    .catch((error) => console.error(error))
-}
+//   fetch(url, {
+//     method: "POST",
+//     body: JSON.stringify(values),
+//     credentials: "include",
+//     headers: {
+//       'Authorization': `Bearer ${token}`,
+//       'Content-Type': 'application/json'
+//     }
+//   })
+//     .then((response) => response.json())
+//     .then((values) => callback(values))
+//     .catch((error) => console.error(error))
+// }
 
 export const postRequest_file = (url, values, callback) => {
   const token = getCookie("token")

@@ -5,7 +5,6 @@ import LoginPage from "./view/LoginPage"
 import ClassStudentPage from "./view/ClassPage_student"
 import ClassesTeacherPage from "./view/ClassesPage_teacher"
 import ClassTeacherPage from "./view/ClassPage_teacher"
-import AdminPage from "./view/AdminPage"
 import AnnouncementPage from "./view/AnnouncementPage"
 import AnnouncementStudentPage from "./view/AnnouncementStudent"
 import HomeStudentPage from "./view/homeStudent"
@@ -31,7 +30,6 @@ const MainRouter = (props) => {
     <Route path="/study" element={<StudyPage />} />
     <Route path="/MyStudy" element={<MyStudyPage />} />
     <Route path="/studyStudent" element={<StudyStudentPage />} />
-    <Route path="/admin" element={<AdminPage />} />
     <Route path="/homeStudent" element={<HomeStudentPage />} />
 
   </Routes>

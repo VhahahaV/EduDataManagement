@@ -14,28 +14,25 @@ const StudentsPage = () => {
   const teacherId = params.get("teacherId")
 
   useEffect(() => {
-    getClasses((data) => {
-      console.log(data.data)
-      getCourseTeachers((result) => {
-        let coursesId = []
-        let students = []
-        console.log(result.data)
-        for (let i = 0; i < result.data.length; i++) {
-          if (result.data[i].teacher == teacherId) {
-            coursesId.push(result.data[i].course)
-          }
+    getCourseTeachers((result) => {
+      let coursesId = []
+      let students = []
+      console.log(result.data)
+      for (let i = 0; i < result.data.length; i++) {
+        if (result.data[i].teacher == teacherId) {
+          coursesId.push(result.data[i].course)
         }
-        for (let j = 0; j < coursesId.length; j++) {
-          getStudentCourseDataByCourseId(coursesId[j], (student_data) => {
-            //console.log(student_data.data)
-            for (let z = 0; z < student_data.data.length; z++) {
-              students.push(student_data.data[z])
-            }
+      }
+      console.log(coursesId)
+      for (let j = 0; j < coursesId.length; j++) {
+        getStudentCourseDataByCourseId(coursesId[j], (student_data) => {
+          console.log(student_data.data)
+          for (let z = 0; z < student_data.data.length; z++) {
+            students = [...students, student_data.data[z]]
             setStudents(students)
-            //console.log(students)
-          })
-        }
-      })
+          }
+        })
+      }
     })
   }, [])
 
@@ -71,7 +68,7 @@ const StudentsPage = () => {
   ]
 
   return (
-    students ?
+    (students.length != 0) ?
       <Layout style={{ minHeight: "100vh" }}>
         <Header className="header">
           <img src={img} className="img"></img>

@@ -33,9 +33,9 @@ const HomePage = () => {
           getStudentCourseDataByCourseId(coursesId[j], (student_data) => {
             //console.log(student_data.data)
             for (let z = 0; z < student_data.data.length; z++) {
-              students.push(student_data.data[z])
+              students = [...students, student_data.data[z]]
+              setStudents(students)
             }
-            setStudents(students)
             //console.log(students)
           })
           for (let k = 0; k < data.data.length; k++) {

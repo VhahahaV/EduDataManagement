@@ -60,11 +60,38 @@ const StudyStudentPage = (props) => {
   useEffect(() => {
     getStudentCourseDataById(id, (data) => {
       setcourseData(data.data)
-      console.log(courseData)
       setAnalysis(JSON.parse(data.data.gradeAnalysis))
       setChapters(JSON.parse(data.data.chapters))
     })
-  })
+  }, [id])
+
+  const reportData = courseData ? {
+    name: courseData.student.name,
+    date: new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }),
+    score: courseData.score,
+    homework: `${courseData.homeworkSubmitted}/${courseData.homeworkTotal}`,
+    attendance: courseData.attendance,
+    studyDuration: courseData.studyDuration,
+    analysis: `excellent:${analysis.excellent},good:${analysis.good},average:${analysis.average},poor:${analysis.poor}`
+  } : null
+
+  const generatePDF = () => {
+    const doc = new jsPDF()
+    doc.text("Study Report", 10, 10)
+    doc.text(`Name: ${reportData.name}`, 10, 20)
+    doc.text(`Date: ${reportData.date}`, 10, 30)
+    doc.text(`Score: ${reportData.score}`, 10, 40)
+    doc.text(`Homework: ${reportData.homework}`, 10, 50)
+    doc.text(`Attendence: ${reportData.attendance}`, 10, 60)
+    doc.text(`StudyDuration: ${reportData.studyDuration}`, 10, 70)
+    doc.text(`Analysis: ${reportData.analysis}`, 10, 80)
+    doc.save("report.pdf")
+  }
+
   const learningIndicators = (
     courseData ?
       <List
@@ -154,11 +181,11 @@ const StudyStudentPage = (props) => {
               </Card>
             </div>
 
-            {/* <div>
-            <Button type='primary' onClick={generatePDF}>
-              下载报告
-            </Button>
-          </div> */}
+            <div style={{ textAlign: 'center', marginTop: '20px' }}>
+              <Button type='primary' onClick={generatePDF}>
+                下载报告
+              </Button>
+            </div>
           </Layout>
         </Content>
         <Footer style={{ textAlign: 'center' }}>

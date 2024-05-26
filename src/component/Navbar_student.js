@@ -1,37 +1,40 @@
 import React, { useState, useEffect } from "react"
 import { Menu, Button } from "antd"
-import { checkAuth, logout } from "../service/user"
 import { HomeOutlined, DatabaseOutlined, DashboardOutlined, LineChartOutlined, AppstoreAddOutlined, CaretDownOutlined } from "@ant-design/icons"
 import { Link, useSearchParams } from "react-router-dom"
 
 const Navbar_student = (props) => {
-  const [username, setUsername] = useState("")
 
-  useEffect(() => {
-    checkAuth((result) => {
-      if (result.code === 200) {
-        setUsername(result.data.username)
-      } else {
-        setUsername("")
-      }
-    })
-  }, [])
-
+  const [params] = useSearchParams()
+  const studentId = params.get("studentId")
   return <>
     {/* <img src="" alt="(logo)" style={{ margin: "auto 32px" }} /> */}
     <PageMenu />
     {
-      <div style={{ margin: "auto 32px auto auto" }}>
-        <Link to={{ pathname: "/" }}>
-          <Button
-            style={{ margin: "auto 32px auto auto", color: "#000", border: "1px solid #000" }}
-            type="primary"
-            ghost
-          >
-            登出
-          </Button>
-        </Link>
-      </div>
+      studentId ?
+        <div style={{ margin: "auto 32px auto auto" }}>
+          <Link to={{ pathname: "/" }}>
+            <Button
+              style={{ margin: "auto 32px auto auto", color: "#000", border: "1px solid #000" }}
+              type="primary"
+              ghost
+            >
+              登出
+            </Button>
+          </Link>
+        </div>
+        :
+        <div style={{ margin: "auto 32px auto auto" }}>
+          <Link to={{ pathname: "/" }}>
+            <Button
+              style={{ margin: "auto 32px auto auto", color: "#000", border: "1px solid #000" }}
+              type="primary"
+              ghost
+            >
+              登录
+            </Button>
+          </Link>
+        </div>
     }
   </>
 }

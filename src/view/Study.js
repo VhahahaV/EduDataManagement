@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import {
   Layout,
   Card,
@@ -12,48 +12,60 @@ import {
   Statistic,
   Button,
   Avatar
-} from 'antd';
-import Navbar from "../component/Navbar";
-import img from "../assets/logo.gif";
-import { useSearchParams } from "react-router-dom";
-import jsPDF from 'jspdf';
-import { getStudentCourseDataById } from '../service/students';
-import { Chart } from 'react-google-charts';
+} from 'antd'
+import Navbar from "../component/Navbar"
+import img from "../assets/logo.gif"
+import { useSearchParams } from "react-router-dom"
+import jsPDF from 'jspdf'
+import { getStudentCourseDataById } from '../service/students'
+import { Chart } from 'react-google-charts'
 
-const { Text, Title } = Typography;
-const { Meta } = Card;
-const { Header, Content, Footer } = Layout;
-const { Panel } = Collapse;
-
-const reportData = {
-  name: "John Doe",
-  date: "2024-05-20",
-  details: "This is the report detail content.",
-};
-
-const generatePDF = () => {
-  const doc = new jsPDF();
-  doc.text("Report Title", 10, 10);
-  doc.text(`Name: ${reportData.name}`, 10, 20);
-  doc.text(`Date: ${reportData.date}`, 10, 30);
-  doc.text(`Details: ${reportData.details}`, 10, 40);
-  doc.save("report.pdf");
-};
+const { Text, Title } = Typography
+const { Meta } = Card
+const { Header, Content, Footer } = Layout
+const { Panel } = Collapse
 
 const StudyPage = () => {
-  const [params] = useSearchParams();
-  const id = params.get("id");
-  const [courseData, setCourseData] = useState(null);
-  const [analysis, setAnalysis] = useState(null);
-  const [chapters, setChapters] = useState([]);
+  const [params] = useSearchParams()
+  const id = params.get("id")
+  const [courseData, setCourseData] = useState(null)
+  const [analysis, setAnalysis] = useState(null)
+  const [chapters, setChapters] = useState([])
 
   useEffect(() => {
     getStudentCourseDataById(id, (data) => {
-      setCourseData(data.data);
-      setAnalysis(JSON.parse(data.data.gradeAnalysis));
-      setChapters(JSON.parse(data.data.chapters));
-    });
-  }, [id]);
+      setCourseData(data.data)
+      setAnalysis(JSON.parse(data.data.gradeAnalysis))
+      setChapters(JSON.parse(data.data.chapters))
+    })
+  }, [id])
+
+  const reportData = courseData ? {
+    name: courseData.student.name,
+    date: new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }),
+    score: courseData.score,
+    homework: `${courseData.homeworkSubmitted}/${courseData.homeworkTotal}`,
+    attendance: courseData.attendance,
+    studyDuration: courseData.studyDuration,
+    analysis: `excellent:${analysis.excellent},good:${analysis.good},average:${analysis.average},poor:${analysis.poor}`
+  } : null
+
+  const generatePDF = () => {
+    const doc = new jsPDF()
+    doc.text("Study Report", 10, 10)
+    doc.text(`Name: ${reportData.name}`, 10, 20)
+    doc.text(`Date: ${reportData.date}`, 10, 30)
+    doc.text(`Score: ${reportData.score}`, 10, 40)
+    doc.text(`Homework: ${reportData.homework}`, 10, 50)
+    doc.text(`Attendence: ${reportData.attendance}`, 10, 60)
+    doc.text(`StudyDuration: ${reportData.studyDuration}`, 10, 70)
+    doc.text(`Analysis: ${reportData.analysis}`, 10, 80)
+    doc.save("report.pdf")
+  }
 
   const learningIndicators = courseData ? (
     <List
@@ -72,7 +84,7 @@ const StudyPage = () => {
         </List.Item>
       )}
     />
-  ) : null;
+  ) : null
 
   const chapterCompletion = courseData ? (
     <Collapse defaultActiveKey={['1', '2']}>
@@ -86,7 +98,7 @@ const StudyPage = () => {
         </Panel>
       ))}
     </Collapse>
-  ) : null;
+  ) : null
 
   const gradeAnalysisStatistic = courseData ? (
     <Descriptions
@@ -99,7 +111,7 @@ const StudyPage = () => {
       <Descriptions.Item label="中等">{analysis.average}</Descriptions.Item>
       <Descriptions.Item label="待提高">{analysis.poor}</Descriptions.Item>
     </Descriptions>
-  ) : null;
+  ) : null
 
   const gradeDistributionData = [
     ['Category', 'Number of Students'],
@@ -107,12 +119,12 @@ const StudyPage = () => {
     ['良好', analysis ? analysis.good : 0],
     ['中等', analysis ? analysis.average : 0],
     ['待提高', analysis ? analysis.poor : 0],
-  ];
+  ]
 
   const chartOptions = {
     title: '学生成绩分布',
     pieHole: 0.4,
-  };
+  }
 
   return (
     courseData ? (
@@ -165,7 +177,7 @@ const StudyPage = () => {
         </Footer>
       </Layout>
     ) : null
-  );
-};
+  )
+}
 
-export default StudyPage;
+export default StudyPage
